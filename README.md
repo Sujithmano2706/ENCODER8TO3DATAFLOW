@@ -35,7 +35,63 @@ Figure 02  Encoder 8 * 3
 
 **Procedure**
 
-/* write all the steps invloved */
+/* Specify the behavior
+
+Decide which encoder you want:
+
+Simple encoder (one-hot only): assumes exactly one input is 1. Output is binary index of that 1.
+
+Priority encoder: if many inputs are 1, a defined priority chooses which index appears (e.g., D7 highest → D0 lowest).
+
+Prepare the functional (truth) table for the one-hot case (below).
+
+Derive boolean expressions (dataflow style)
+
+For one-hot mapping D0→000, D1→001, ... D7→111, the MSB/bit expressions are:
+
+Y[2] = D7 | D6 | D5 | D4
+
+Y[1] = D7 | D6 | D3 | D2
+
+Y[0] = D7 | D5 | D3 | D1
+
+For priority encoder, create signals that indicate the highest asserted input (e.g. d7p = D[7]; d6p = D[6] & ~D[7]; ...) and then form Y from those.
+
+Write Verilog modules
+
+Implement the dataflow encoder using assign statements (I provided templates earlier).
+
+Implement a priority encoder (dataflow) if you need well-defined multi-assert behavior.
+
+Write a self-checking testbench
+
+The testbench should:
+
+Iterate all 8 one-hot vectors and check the output equals expected binary code.
+
+Optionally test all 256 input combinations to detect ambiguous behavior and to verify priority behavior if using the priority encoder.
+
+Print pass/fail per vector, and a final summary.
+
+Simulate
+
+Use Icarus Verilog (iverilog + vvp) or ModelSim/Questa.
+
+Run waveform viewer (gtkwave) if you want to inspect signals interactively.
+
+Check results
+
+If any vector fails, inspect the waveform or printed mismatches and correct logic.
+
+For multi-assert cases, verify the behavior matches your specification (undefined or priority).
+
+Synthesize (optional)
+
+Run synthesis in your target tool (Vivado, Quartus, etc.) if targeting FPGA/ASIC. Check resource usage and timing.
+
+Document final functional table and limitations
+
+Note that the simple dataflow encoder only guarantees correctness for true one-hot inputs; multi-assert inputs produce the OR of logic terms (not a defined index).*/
 
 **PROGRAM**
 ```
